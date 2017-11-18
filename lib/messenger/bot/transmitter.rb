@@ -1,6 +1,9 @@
 module Messenger
   module Bot
     class Transmitter
+
+      attr_reader :sender_id, :on_facebook
+
       def initialize(sender, on_facebook)
         p "INIT"
         p on_facebook

@@ -15,23 +15,25 @@ module Messenger
         params["entry"].each do |entry|
           messaging_events = entry["messaging"]
           messaging_events.each_with_index do |event, key|
+
             if event["sender"]["on_facebook"] == false
               sender = Messenger::Bot::Transmitter.new(event["sender"]["id"], false)
             else
               sender = Messenger::Bot::Transmitter.new(event["sender"]["id"], true)
             end
-            if event["message"] && !defined?(message).nil? && event["message"]["quick_reply"].nil?
-              send(:message, event, sender)
-            elsif (event["postback"] && !defined?(postback).nil?) || (event["message"]["quick_reply"].present?)
-              if event["message"].present?
+
+            if event["message"].present?
+              if !defined?(message).nil? && event["message"]["quick_reply"].nil?
+                send(:message, event, sender)
+              elsif (event["postback"] && !defined?(postback).nil?) || (event["message"]["quick_reply"].present?)
                 event["postback"] = event["message"]["quick_reply"]
-                send(:postback, event, sender)
-              else
                 send(:postback, event, sender)
               end
             elsif event["delivery"] && !defined?(delivery).nil?
+
               send(:delivery, event, sender)
             elsif event["optin"]
+
               send(:optin, event, sender)
             end
           end
